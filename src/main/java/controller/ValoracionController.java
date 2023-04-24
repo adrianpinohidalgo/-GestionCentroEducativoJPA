@@ -1,0 +1,52 @@
+package controller;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+
+import model.Valoracionmateria;
+
+public class ValoracionController {
+	private static EntityManagerFactory entityManagerFactory = Persistence
+			.createEntityManagerFactory("GestionCentroEducativoJPA");
+
+	/** 
+	 * 
+	 */
+	public static Valoracionmateria findBySomeId(int idMateria, int idProfesor, int idEstudiante) {
+		EntityManager em = entityManagerFactory.createEntityManager();
+		Valoracionmateria o = null;
+
+		try {
+			Query q = em.createNativeQuery(
+					"SELECT * FROM valoracionmateria where idMateria = ? and idProfesor = ? and idEstudiante = ?;",
+					Valoracionmateria.class);
+			q.setParameter(1, idMateria);
+			q.setParameter(2, idProfesor);
+			q.setParameter(3, idEstudiante);
+
+			o = (Valoracionmateria) q.getSingleResult();
+		} catch (Exception e) {
+		}
+
+		em.close();
+
+		return o;
+	}
+
+	/**
+	 * 
+	 * @param o
+	 */
+	public static void update(Valoracionmateria o) {
+		EntityManager em = entityManagerFactory.createEntityManager();
+		em.getTransaction().begin();
+		em.merge(o);
+		em.getTransaction().commit();
+		em.close();
+	}
+
+}
