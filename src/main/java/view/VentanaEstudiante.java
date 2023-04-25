@@ -231,7 +231,7 @@ public class VentanaEstudiante extends JFrame {
 		for (EstudiantePanel estudiantePanel : vm) {
 			Valoracionmateria v = estudiantePanel.guardar();
 			if (v != null) {
-				System.out.println(v.toString());
+//				System.out.println(v.toString());
 				ValoracionController.update(v);
 			}
 			else {
