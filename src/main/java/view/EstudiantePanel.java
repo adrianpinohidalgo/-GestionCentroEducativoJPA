@@ -16,11 +16,10 @@ import model.Profesor;
 import model.Valoracionmateria;
 
 public class EstudiantePanel extends JPanel {
-	private static Estudiante e;
-	private static Materia m;
-	private static Profesor p;
-	private static JSpinner spinner;
-	
+	private Estudiante e;
+	private Materia m;
+	private Profesor p;
+	private JSpinner spinner;
 
 	@Override
 	public String toString() {
@@ -59,7 +58,7 @@ public class EstudiantePanel extends JPanel {
 		add(spinner, gbc_spinner);
 	}
 
-	private static int valoracionEstudiante() {
+	private int valoracionEstudiante() {
 		Valoracionmateria valoracion = ValoracionController.findBySomeId(m.getId(), p.getId(), e.getId());
 		if (valoracion != null) {
 			return (int) valoracion.getValoracion();
@@ -67,17 +66,31 @@ public class EstudiantePanel extends JPanel {
 			return 0;
 		}
 	}
+	
+	public Estudiante devolverEstudiante() {
+		return e;
+	}
+	
+	public int devolverValoracion() {
+		return (int) spinner.getValue();
+	}
+	
 
-	public void guardar() {
+	public Valoracionmateria guardar() {
+		Valoracionmateria o1 = ValoracionController.findBySomeId(m.getId(), p.getId(), e.getId());
 		Valoracionmateria o = new Valoracionmateria();
-		o.setProfesor(p);
-		o.setEstudiante(e);
-		o.setMateria(m);
-		int valoracion = (int) spinner.getValue();
-		System.out.println(valoracion);
-		System.out.println(o.toString());
-//		o.setProfesor(idProfesor);
-//		
-//		MunicipioController.update(o);
+		
+		if(o1 != null) {
+			o.setId(o1.getId());
+			o.setProfesor(p);
+			o.setEstudiante(e);
+			o.setMateria(m);
+			o.setValoracion((int) spinner.getValue());
+	
+			return o;
+		}
+		else {
+			return null;
+		}
 	}
 }

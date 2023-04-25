@@ -169,10 +169,7 @@ public class VentanaEstudiante extends JFrame {
 		JButton btnGuardar = new JButton("Guardar las notas del alumnado");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				for (EstudiantePanel estudiantePanel : panelesEstudiantes) {
-//					estudiantePanel.guardar();
-//					System.out.println(estudiantePanel.toString());
-//				}
+				guardarNotas();
 			}
 		});
 		GridBagConstraints gbc_btnGuardar = new GridBagConstraints();
@@ -215,29 +212,36 @@ public class VentanaEstudiante extends JFrame {
 	 * 
 	 */
 	private void cargarEstudiantes() {
-
 		this.panelEstudiantes.removeAll();
 		vm = new ArrayList<EstudiantePanel>();
-		
+
 		List<Estudiante> l = EstudianteController.findAll();
 		for (Estudiante estudiante : l) {
-			EstudiantePanel nuevoPanel = new EstudiantePanel(estudiante, (Materia) jcbMateria.getSelectedItem(), (Profesor) jcbProfesor.getSelectedItem());
+			EstudiantePanel nuevoPanel = new EstudiantePanel(estudiante, (Materia) jcbMateria.getSelectedItem(),
+					(Profesor) jcbProfesor.getSelectedItem());
 			panelEstudiantes.add(nuevoPanel);
-			
-			
 			vm.add(nuevoPanel);
-			System.out.println(vm.toString());
-			
-			
-			this.repaint();
-			this.revalidate();
 		}
+
+		this.repaint();
+		this.revalidate();
 	}
 
 	private void guardarNotas() {
-//		for (EstudiantePanel estudiantePanel : panelesEstudiantes) {
-////			estudiantePanel.guardar();
-//			System.out.println(estudiantePanel.toString());
-//		}
+		for (EstudiantePanel estudiantePanel : vm) {
+			Valoracionmateria v = estudiantePanel.guardar();
+			if (v != null) {
+				System.out.println(v.toString());
+				ValoracionController.update(v);
+			}
+			else {
+				v = new Valoracionmateria();
+				v.setProfesor((Profesor) jcbProfesor.getSelectedItem());
+				v.setEstudiante(estudiantePanel.devolverEstudiante());
+				v.setMateria((Materia) jcbMateria.getSelectedItem());
+				v.setValoracion(estudiantePanel.devolverValoracion());
+				ValoracionController.insert(v);
+			}
+		}
 	}
 }
